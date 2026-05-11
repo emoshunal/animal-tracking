@@ -1,20 +1,34 @@
-import { Button } from "@/components/ui/button"
-
+import { LoginForm } from "./components/auth/login-form"
+import Dashboard from "./pages/admin/dashboard"
+import AnimalRecords from "./pages/admin/animal"
+import OwnersPage from "./pages/admin/owner"
+import VaccinationPage from "./pages/admin/vaccine"
+import LostAndFoundPage from "./pages/admin/lost_and_found"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import ProtectedRoute from "./router/router"
+import Layout from "./components/layout"
+import ScanReportsPage from "./pages/admin/reports"
+import LandingPage from "./pages/landing"
+import AnimalOwnersPage from "./pages/admin/owner/animal-owner"
 export function App() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/:qrId" element={<LandingPage />} />
+        <Route path="/" element={<LoginForm />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/animals" element={<AnimalRecords />} />
+            <Route path="/owners" element={<OwnersPage />} />
+            <Route path="/vaccinations" element={<VaccinationPage />} />
+            <Route path="/lost-and-found" element={<LostAndFoundPage />} />
+            <Route path="/reports" element={<ScanReportsPage />} />
+            <Route path="/animal" element={<AnimalOwnersPage />} />
+          </Route>
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
