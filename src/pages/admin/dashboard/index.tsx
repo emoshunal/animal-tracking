@@ -101,7 +101,7 @@ const Dashboard = () => {
             Monitoring community animal registration and QR sighting activity.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
@@ -110,7 +110,7 @@ const Dashboard = () => {
             <Download className="mr-2 size-4" /> Export Data
           </Button>
           <RegisterAnimalModal />
-        </div>
+        </div> */}
       </div>
 
       {/* --- KPIS (Hardware-free metrics) --- */}

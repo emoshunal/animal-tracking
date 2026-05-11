@@ -50,9 +50,9 @@ export default function VaccinationPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="bg-white">
+          {/* <Button variant="outline" size="sm" className="bg-white">
             <Download className="mr-2 size-4" /> Export Schedule
-          </Button>
+          </Button> */}
 
           <Button
             className="bg-emerald-600 font-bold shadow-lg shadow-emerald-100 hover:bg-emerald-700 active:scale-95"
