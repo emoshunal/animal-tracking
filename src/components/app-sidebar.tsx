@@ -70,10 +70,10 @@ export function AppSidebar() {
           </div>
           <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
             <span className="text-lg font-bold tracking-tight text-foreground">
-              VET-TRACK
+              BRGY-PET
             </span>
             <span className="text-[10px] font-semibold tracking-widest text-emerald-600 uppercase">
-              Premium Ops
+              Animal Tracking System
             </span>
           </div>
         </div>
@@ -160,16 +160,16 @@ export function AppSidebar() {
                 align="end"
                 className="mb-2 ml-2 w-56"
               >
-                <DropdownMenuItem className="cursor-pointer gap-2 py-2">
+                {/* <DropdownMenuItem className="cursor-pointer gap-2 py-2">
                   <UserCircle className="size-4" /> Profile Details
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer gap-2 py-2">
                   <Bell className="size-4" /> Notifications
                 </DropdownMenuItem>
-                <SidebarSeparator />
+                <SidebarSeparator /> */}
                 <DropdownMenuItem
                   onClick={handleLogout}
-                  className="cursor-pointer gap-2 py-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
+                  className="cursor-pointer gap-2 bg-white py-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
                 >
                   <LogOut className="size-4" /> Log out
                 </DropdownMenuItem>

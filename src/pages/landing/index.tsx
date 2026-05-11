@@ -387,11 +387,11 @@ export default function PublicAnimalProfile() {
           </a>
         )}
         {/* Security Footer */}
-        <div className="flex flex-col items-center justify-center gap-1 text-slate-300">
+        <div className="flex flex-col items-center justify-center gap-1 text-slate-600">
           <div className="flex items-center gap-2">
             <ShieldCheck className="size-4" />
             <span className="text-[9px] font-bold tracking-[0.2em] uppercase">
-              Verified Barangay Pet Registry
+              Verified Barangay Anonas Pet Registry
             </span>
           </div>
           <p className="text-[8px] font-medium">Tag ID: QR-{qrId}</p>
