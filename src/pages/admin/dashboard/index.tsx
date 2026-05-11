@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+// import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { RegisterAnimalModal } from "@/components/register-animal"
 import { useEffect, useState } from "react"
@@ -101,16 +101,16 @@ const Dashboard = () => {
             Monitoring community animal registration and QR sighting activity.
           </p>
         </div>
-        {/* <div className="flex items-center gap-2">
-          <Button
+        <div className="flex items-center gap-2">
+          {/* <Button
             variant="outline"
             size="sm"
             className="border-slate-200 bg-white shadow-sm"
           >
             <Download className="mr-2 size-4" /> Export Data
-          </Button>
+          </Button> */}
           <RegisterAnimalModal />
-        </div> */}
+        </div>
       </div>
 
       {/* --- KPIS (Hardware-free metrics) --- */}
