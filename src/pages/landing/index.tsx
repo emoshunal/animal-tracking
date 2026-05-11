@@ -240,9 +240,13 @@ export default function PublicAnimalProfile() {
                     <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
                       Owner Contact
                     </p>
-                    <h3 className="text-lg font-bold text-slate-900">
+                    <h3 className="text-lg leading-tight font-bold text-slate-900">
                       {animal.owners.full_name}
                     </h3>
+                    <p className="flex items-center gap-1.5 font-mono text-xs font-medium text-slate-500">
+                      <Phone className="size-3 text-slate-400" />
+                      {animal.owners.phone_number}
+                    </p>
                   </div>
                   <a href={`tel:${animal.owners.phone_number}`}>
                     <Button

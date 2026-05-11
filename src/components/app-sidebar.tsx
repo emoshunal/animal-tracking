@@ -9,7 +9,6 @@ import {
   LogOut,
   ChevronUp,
   UserCircle,
-  Bell,
 } from "lucide-react"
 
 import {
@@ -73,7 +72,7 @@ export function AppSidebar() {
               BRGY-PET
             </span>
             <span className="text-[10px] font-semibold tracking-widest text-emerald-600 uppercase">
-              Animal Tracking System
+              Animal Tracking & Registration
             </span>
           </div>
         </div>

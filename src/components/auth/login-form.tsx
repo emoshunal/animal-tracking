@@ -75,7 +75,7 @@ export function LoginForm() {
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-white">
                 <PawPrint size={24} />
               </div>
-              <span className="text-xl">VET-TRACK</span>
+              <span className="text-xl">BRGY-PET</span>
             </div>
 
             <div className="relative z-10">
@@ -85,7 +85,7 @@ export function LoginForm() {
                   management for municipal districts."
                 </p>
                 <footer className="text-sm text-emerald-300">
-                  Animal Management Division
+                  Barangay Anonas Animal Tracking and Registration
                 </footer>
               </blockquote>
             </div>

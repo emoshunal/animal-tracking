@@ -296,9 +296,10 @@ export function RegisterAnimalModal() {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
-                      <SelectItem value="dog">Canine (Dog)</SelectItem>
-                      <SelectItem value="cat">Feline (Cat)</SelectItem>
-                      <SelectItem value="livestock">Livestock</SelectItem>
+                      <SelectItem value="dog">Domestic</SelectItem>
+                      <SelectItem value="cat">Livestock</SelectItem>
+                      <SelectItem value="livestock">Exotic</SelectItem>
+                      <SelectItem value="wild">Wild</SelectItem>
                     </SelectContent>
                   </Select>
                   {errors.species && (
@@ -311,17 +312,12 @@ export function RegisterAnimalModal() {
                   <Label className="text-[11px] font-bold text-slate-500 uppercase">
                     Breed
                   </Label>
-                  <Select onValueChange={(value) => setValue("breed", value)}>
-                    <SelectTrigger className="h-11 w-full border-none bg-slate-50 focus:ring-emerald-500">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white">
-                      <SelectItem value="askal">Aspin / Mixed</SelectItem>
-                      <SelectItem value="golden">Golden Retriever</SelectItem>
-                      <SelectItem value="shih">Shih Tzu</SelectItem>
-                      <SelectItem value="persian">Persian Cat</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    {...register("breed")}
+                    placeholder="e.g Canine"
+                    className="h-11 border-none bg-slate-50 focus-visible:ring-emerald-500"
+                  />
+
                   {errors.breed && (
                     <p className="text-[10px] text-red-500">
                       {errors.breed.message}
