@@ -120,7 +120,7 @@ export function AppSidebar() {
                 Active Coverage
               </p>
               <h4 className="text-xs font-semibold text-emerald-700/80">
-                San Isidro District
+                Anonas District
               </h4>
             </div>
             {/* Background Decorative Icon */}
@@ -145,10 +145,10 @@ export function AppSidebar() {
                     </div>
                     <div className="flex flex-col items-start overflow-hidden text-sm group-data-[collapsible=icon]:hidden">
                       <span className="w-28 truncate text-left font-semibold text-foreground">
-                        Sarah Jenkins
+                        Secretary
                       </span>
                       <span className="w-28 truncate text-left text-[11px] text-muted-foreground">
-                        Senior Tracker
+                        Barangay Anonas
                       </span>
                     </div>
                   </div>
