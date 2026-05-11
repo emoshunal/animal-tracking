@@ -54,7 +54,9 @@ const formSchema = z.object({
   ownerId: z.string().optional(),
 })
 
+const BASE_URL = window.location.origin
 export function RegisterAnimalModal() {
+  console.log("Base url is ", BASE_URL)
   const modal = useAnimalStore()
   const editData = modal.selectedAnimal
   const isEdit = !!editData
@@ -152,7 +154,7 @@ export function RegisterAnimalModal() {
         const { error } = await supabase.from("animals").insert([
           {
             ...payload,
-            qr_code_id: `${import.meta.env.VITE_URL}/QR-${Math.floor(1000 + Math.random() * 9000)}`,
+            qr_code_id: `${BASE_URL}/QR-${Math.floor(1000 + Math.random() * 9000)}`,
             status: "Safe",
           },
         ])
