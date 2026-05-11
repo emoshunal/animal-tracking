@@ -4,7 +4,6 @@ import {
   Filter,
   MoreHorizontal,
   Syringe,
-  Download,
   Edit2,
   History,
   Plus,

@@ -77,13 +77,13 @@ export default function AnimalRecords() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button
+          {/* <Button
             variant="outline"
             size="sm"
             className="border-slate-200 bg-white shadow-sm"
           >
             <Printer className="mr-2 size-4" /> Bulk Print QR
-          </Button>
+          </Button> */}
           <Button
             onClick={onOpen}
             className="bg-emerald-600 font-bold shadow-lg shadow-emerald-100 hover:bg-emerald-700"

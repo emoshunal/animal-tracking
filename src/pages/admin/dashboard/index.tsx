@@ -4,7 +4,6 @@ import {
   Megaphone,
   ArrowUpRight,
   ArrowDownRight,
-  Download,
   QrCode,
 } from "lucide-react"
 
