@@ -230,6 +230,31 @@ export default function PublicAnimalProfile() {
 
         {!showReportForm ? (
           <div className="space-y-3">
+            {isLost && animal.owners && (
+              <Card className="animate-in border-none bg-white p-5 shadow-lg ring-1 ring-red-100 duration-500 fade-in zoom-in">
+                <div className="flex items-center gap-4">
+                  <div className="flex size-12 items-center justify-center rounded-2xl bg-red-50 text-red-600">
+                    <Phone className="size-6" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+                      Owner Contact
+                    </p>
+                    <h3 className="text-lg font-bold text-slate-900">
+                      {animal.owners.full_name}
+                    </h3>
+                  </div>
+                  <a href={`tel:${animal.owners.phone_number}`}>
+                    <Button
+                      size="sm"
+                      className="rounded-xl bg-red-600 font-bold hover:bg-red-700"
+                    >
+                      Call Now
+                    </Button>
+                  </a>
+                </div>
+              </Card>
+            )}
             {isLost ? (
               <Button
                 onClick={() => setShowReportForm(true)}
@@ -348,6 +373,19 @@ export default function PublicAnimalProfile() {
           </Card>
         )}
 
+        {!isLost && (
+          <a
+            href={`tel:${animal.owners?.phone_number || "09123456789"}`}
+            className="block"
+          >
+            <Button
+              variant="outline"
+              className="h-14 w-full rounded-2xl border-slate-200 bg-white font-bold text-slate-600"
+            >
+              <Phone className="mr-2 size-4" /> Call Barangay Office
+            </Button>
+          </a>
+        )}
         {/* Security Footer */}
         <div className="flex flex-col items-center justify-center gap-1 text-slate-300">
           <div className="flex items-center gap-2">

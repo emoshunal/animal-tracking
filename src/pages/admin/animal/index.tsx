@@ -32,10 +32,7 @@ import { AnimalProfileModal } from "@/components/animal-profile"
 import { QRCodeCanvas } from "qrcode.react"
 import { downloadQRCode, printQRCode } from "@/utils/qrcode"
 
-import { useNavigate } from "react-router-dom"
-
 export default function AnimalRecords() {
-  const navigate = useNavigate()
   const onOpen = useAnimalStore((state) => state.onOpen)
   const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null)
   const [search, setSearch] = useState("")
@@ -63,7 +60,13 @@ export default function AnimalRecords() {
   )
 
   const handleQrClick = (qrId: string) => {
-    navigate("/info", { state: { qrId } })
+    const isFullUrl = qrId.startsWith("http")
+
+    if (isFullUrl) {
+      window.open(qrId, "_blank", "noopener,noreferrer")
+    } else {
+      window.open(`/${qrId}`, "_blank", "noopener,noreferrer")
+    }
   }
 
   return (
