@@ -119,7 +119,7 @@ export function AppSidebar() {
                 Active Coverage
               </p>
               <h4 className="text-xs font-semibold text-emerald-700/80">
-                Anonas District
+                Barangay Anonas, Urdaneta City
               </h4>
             </div>
             {/* Background Decorative Icon */}
