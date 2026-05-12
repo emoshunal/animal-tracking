@@ -59,7 +59,7 @@ const Dashboard = () => {
       const { count: lostCount } = await supabase
         .from("animals")
         .select("*", { count: "exact", head: true })
-        .eq("status", "LOST")
+        .eq("status", "Missing")
 
       // 5. Get Recent Sightings with Animal details
       const { data: sightings } = await supabase
