@@ -280,7 +280,7 @@ export default function PublicAnimalProfile() {
                 </div>
               </div>
             )}
-            <a
+            {/* <a
               href={`CP:${animal.owners?.phone_number || "09123456789"}`}
               className="block"
             >
@@ -291,7 +291,7 @@ export default function PublicAnimalProfile() {
                 <Phone className="mr-2 size-4" /> Call{" "}
                 {isLost ? "Owner" : "Barangay Office"}
               </Button>
-            </a>
+            </a> */}
           </div>
         ) : (
           <Card className="animate-in rounded-3xl border-none shadow-2xl duration-500 slide-in-from-bottom-10">

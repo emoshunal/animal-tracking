@@ -1,11 +1,4 @@
-import {
-  PawPrint,
-  Syringe,
-  Megaphone,
-  ArrowUpRight,
-  ArrowDownRight,
-  QrCode,
-} from "lucide-react"
+import { PawPrint, Syringe, Megaphone, AlertTriangle } from "lucide-react"
 
 import { type LucideIcon } from "lucide-react"
 
@@ -25,10 +18,12 @@ import { formatDistanceToNow } from "date-fns"
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
-    totalAnimals: 0,
+    totalWithOwnders: 0,
+    vaccinated: 0,
+    unvaccinated: 0,
     vaccinationRate: 0,
+    totalStray: 0,
     activeLost: 0,
-    totalScans: 0,
   })
 
   const [recentSightings, setRecentSightings] = useState<any[]>([])
@@ -39,9 +34,10 @@ const Dashboard = () => {
       setLoading(true)
 
       // 1. Get Total Registered Animals
-      const { count: animalCount } = await supabase
+      const { count: withOwnerCount } = await supabase
         .from("animals")
         .select("*", { count: "exact", head: true })
+        .not("owner_id", "is", null)
 
       // 2. Get Vaccination Rate (Animals where vaccinated = true)
       const { count: vacCount } = await supabase
@@ -49,16 +45,21 @@ const Dashboard = () => {
         .select("*", { count: "exact", head: true })
         .eq("is_vaccinated", true)
 
-      // 3. Get Active Lost Reports
+      const { count: totalAnimalCount } = await supabase
+        .from("animals")
+        .select("*", { count: "exact", head: true })
+
+      const unvaccinatedCount = (totalAnimalCount || 0) - (vacCount || 0)
+
+      const { count: strayCount } = await supabase
+        .from("animals")
+        .select("*", { count: "exact", head: true })
+        .is("owner_id", null)
+
       const { count: lostCount } = await supabase
         .from("animals")
         .select("*", { count: "exact", head: true })
         .eq("status", "LOST")
-
-      // 4. Get Total Scans (from your sighting_reports table)
-      const { count: scanCount } = await supabase
-        .from("sighting_reports")
-        .select("*", { count: "exact", head: true })
 
       // 5. Get Recent Sightings with Animal details
       const { data: sightings } = await supabase
@@ -73,12 +74,14 @@ const Dashboard = () => {
         .limit(3)
 
       setStats({
-        totalAnimals: animalCount || 0,
-        vaccinationRate: animalCount
-          ? Math.round((vacCount! / animalCount) * 100)
+        totalWithOwnders: withOwnerCount || 0,
+        vaccinated: vacCount || 0,
+        unvaccinated: unvaccinatedCount || 0,
+        vaccinationRate: totalAnimalCount
+          ? Math.round((vacCount! / totalAnimalCount) * 100)
           : 0,
+        totalStray: strayCount || 0,
         activeLost: lostCount || 0,
-        totalScans: scanCount || 0,
       })
       setRecentSightings(sightings || [])
       setLoading(false)
@@ -115,8 +118,9 @@ const Dashboard = () => {
       {/* --- KPIS (Hardware-free metrics) --- */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
-          title="Total Registered"
-          value={stats.totalAnimals.toLocaleString()}
+          title="Registered Animals with Owners"
+          value={stats.totalWithOwnders.toLocaleString()}
+          subtitle={""}
           trend="+12%" // You can calculate this by comparing to a previous date range if desired
           up={true}
           icon={PawPrint}
@@ -125,26 +129,29 @@ const Dashboard = () => {
         <StatsCard
           title="Vaccination Rate"
           value={`${stats.vaccinationRate}%`}
-          trend="+5.2%"
+          subtitle={`${stats.vaccinated} Vaccinated • ${stats.unvaccinated} Unvaccinated`}
+          trend="vac"
           up={true}
           icon={Syringe}
           color="text-blue-600"
         />
         <StatsCard
-          title="Active Lost Reports"
-          value={stats.activeLost.toString().padStart(2, "0")}
-          trend="-2"
+          title="Total of Stray Animals"
+          value={stats.totalStray.toString().padStart(2, "0")}
+          subtitle={""}
+          trend="astray"
           up={false}
-          icon={Megaphone}
+          icon={AlertTriangle}
           color="text-red-600"
-          urgent={stats.activeLost > 0}
+          urgent={stats.totalStray > 0}
         />
         <StatsCard
-          title="Total QR Scans"
-          value={stats.totalScans.toLocaleString()}
-          trend="+18%"
+          title="Total of Reported Lost"
+          value={stats.activeLost.toLocaleString()}
+          subtitle={""}
+          trend="lost"
           up={true}
-          icon={QrCode}
+          icon={Megaphone}
           color="text-indigo-600"
         />
       </div>
@@ -192,6 +199,7 @@ const Dashboard = () => {
 interface StatsCardProps {
   title: string
   value: string | number
+  subtitle: string | null
   trend: string
   up: boolean
   icon: LucideIcon | React.ElementType // Handles the icon component
@@ -201,12 +209,24 @@ interface StatsCardProps {
 function StatsCard({
   title,
   value,
+  subtitle,
   trend,
-  up,
+
   icon: Icon,
   color,
   urgent = false,
 }: StatsCardProps) {
+  const getLabel = () => {
+    if (trend === "astray")
+      return { text: "ACTION REQUIRED", color: "text-red-600 bg-red-50" }
+    if (trend === "vac")
+      return { text: "HEALTH TARGET", color: "text-blue-600 bg-blue-50" }
+    if (trend === "lost")
+      return { text: "URGENT", color: "text-indigo-600 bg-indigo-50" }
+    return { text: "SYSTEM UPDATED", color: "text-emerald-600 bg-emerald-50" }
+  }
+
+  const label = getLabel()
   return (
     <Card
       className={`border-none bg-white shadow-md shadow-slate-200/50 ${urgent && value !== "0" ? "ring-2 ring-red-500/20" : ""}`}
@@ -221,7 +241,19 @@ function StatsCard({
       </CardHeader>
       <CardContent>
         <div className="text-3xl font-black text-slate-900">{value}</div>
-        <div className="mt-1 flex items-center">
+        {subtitle && (
+          <p className="mt-0.5 text-[10px] font-bold text-slate-400">
+            {subtitle}
+          </p>
+        )}
+        <div className="mt-3">
+          <span
+            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-black tracking-wider uppercase ${label.color}`}
+          >
+            {label.text}
+          </span>
+        </div>
+        {/* <div className="mt-1 flex items-center">
           {up ? (
             <ArrowUpRight className="mr-1 size-3 text-emerald-500" />
           ) : (
@@ -235,7 +267,7 @@ function StatsCard({
           <span className="ml-1.5 text-[10px] font-medium text-slate-400">
             vs last month
           </span>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   )
