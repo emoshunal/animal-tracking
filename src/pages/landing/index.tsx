@@ -5,7 +5,6 @@ import {
   AlertCircle,
   Phone,
   Send,
-  Heart,
   Info,
   CheckCircle2,
   Loader2,
@@ -164,25 +163,6 @@ export default function PublicAnimalProfile() {
             <p className="mt-2 text-sm font-bold tracking-tighter text-emerald-600 uppercase">
               {animal.breed} • {animal.species} • {animal.age} Years Old
             </p>
-
-            <div className="mt-6 flex items-center justify-center gap-6">
-              <div className="flex flex-col items-center">
-                <div className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600">
-                  <ShieldCheck className="size-5" />
-                </div>
-                <span className="mt-1 text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">
-                  Vaccinated
-                </span>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600">
-                  <Heart className="size-5" />
-                </div>
-                <span className="mt-1 text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">
-                  Friendly
-                </span>
-              </div>
-            </div>
           </CardContent>
         </Card>
         {/* <div className="relative h-64 bg-slate-200">
