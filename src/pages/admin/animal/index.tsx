@@ -52,13 +52,26 @@ export default function AnimalRecords() {
     return () => clearTimeout(timer)
   }, [search])
 
+  const [sortConfig, setSortConfig] = useState({
+    column: "created_at",
+    ascending: false,
+  })
+
   const { data, totalPages, loading } = useAnimals(
     debouncedSearch,
     page,
     PAGE_SIZE,
-    refreshTrigger
+    refreshTrigger,
+    null,
+    sortConfig
   )
 
+  const toggleSort = (column: string) => {
+    setSortConfig((prev) => ({
+      column,
+      ascending: prev.column === column ? !prev.ascending : false,
+    }))
+  }
   const handleQrClick = (qrId: string) => {
     const isFullUrl = qrId.startsWith("http")
 
@@ -158,17 +171,38 @@ export default function AnimalRecords() {
         <table className="w-full border-collapse text-left">
           <thead>
             <tr className="bg-slate-50/50">
-              <th className="p-4 text-xs font-bold text-slate-500 uppercase">
-                Animal & Breed
+              <th
+                className="cursor-pointer p-4 text-xs font-bold text-slate-500 uppercase transition-colors hover:text-emerald-600"
+                onClick={() => toggleSort("name")}
+              >
+                <div className="flex items-center gap-1">
+                  Animal & Breed{" "}
+                  {sortConfig.column === "name" &&
+                    (sortConfig.ascending ? "↑" : "↓")}
+                </div>
               </th>
               <th className="p-4 text-xs font-bold text-slate-500 uppercase">
                 QR Identity
               </th>
-              <th className="p-4 text-xs font-bold text-slate-500 uppercase">
-                Ownership
+              <th
+                className="cursor-pointer p-4 text-xs font-bold text-slate-500 uppercase transition-colors hover:text-emerald-600"
+                onClick={() => toggleSort("owner_id")}
+              >
+                <div className="flex items-center gap-1">
+                  Ownership{" "}
+                  {sortConfig.column === "owner_id" &&
+                    (sortConfig.ascending ? "↑" : "↓")}
+                </div>
               </th>
-              <th className="p-4 text-xs font-bold text-slate-500 uppercase">
-                Health & Safety
+              <th
+                className="cursor-pointer p-4 text-xs font-bold text-slate-500 uppercase transition-colors hover:text-emerald-600"
+                onClick={() => toggleSort("status")}
+              >
+                <div className="flex items-center gap-1">
+                  Health & Safety{" "}
+                  {sortConfig.column === "status" &&
+                    (sortConfig.ascending ? "↑" : "↓")}
+                </div>
               </th>
               <th className="p-4"></th>
             </tr>

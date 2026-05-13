@@ -101,6 +101,18 @@ export function LogVaccinationModal() {
       toast.success(
         `Vaccination record ${selectedRecord ? "updated" : "logged"} successfully!`
       )
+
+      const { error: animalUpdateError } = await supabase
+        .from("animals")
+        .update({ is_vaccinated: true })
+        .eq("id", formData.animal_id)
+
+      if (animalUpdateError) {
+        console.warn(
+          "Record saved, but failed to update animal status:",
+          animalUpdateError
+        )
+      }
       triggerRefresh()
     } catch (err: any) {
       console.error("Error saving vaccination record:", err)

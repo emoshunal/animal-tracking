@@ -120,25 +120,14 @@ const Dashboard = () => {
         <StatsCard
           title="Registered Animals with Owners"
           value={stats.totalWithOwnders.toLocaleString()}
-          subtitle={""}
           trend="+12%" // You can calculate this by comparing to a previous date range if desired
           up={true}
           icon={PawPrint}
           color="text-emerald-600"
         />
         <StatsCard
-          title="Vaccination Rate"
-          value={`${stats.vaccinationRate}%`}
-          subtitle={`${stats.vaccinated} Vaccinated • ${stats.unvaccinated} Unvaccinated`}
-          trend="vac"
-          up={true}
-          icon={Syringe}
-          color="text-blue-600"
-        />
-        <StatsCard
           title="Total of Stray Animals"
           value={stats.totalStray.toString().padStart(2, "0")}
-          subtitle={""}
           trend="astray"
           up={false}
           icon={AlertTriangle}
@@ -146,9 +135,16 @@ const Dashboard = () => {
           urgent={stats.totalStray > 0}
         />
         <StatsCard
-          title="Total of Reported Lost"
-          value={stats.activeLost.toLocaleString()}
-          subtitle={""}
+          title="Vaccinated"
+          value={stats.vaccinated}
+          trend="vac"
+          up={true}
+          icon={Syringe}
+          color="text-indigo-600"
+        />
+        <StatsCard
+          title="Not Vaccinated"
+          value={stats.unvaccinated}
           trend="lost"
           up={true}
           icon={Megaphone}
@@ -199,7 +195,6 @@ const Dashboard = () => {
 interface StatsCardProps {
   title: string
   value: string | number
-  subtitle: string | null
   trend: string
   up: boolean
   icon: LucideIcon | React.ElementType // Handles the icon component
@@ -209,7 +204,7 @@ interface StatsCardProps {
 function StatsCard({
   title,
   value,
-  subtitle,
+
   trend,
 
   icon: Icon,
@@ -241,11 +236,11 @@ function StatsCard({
       </CardHeader>
       <CardContent>
         <div className="text-3xl font-black text-slate-900">{value}</div>
-        {subtitle && (
+        {/* {subtitle && (
           <p className="mt-0.5 text-[10px] font-bold text-slate-400">
             {subtitle}
           </p>
-        )}
+        )} */}
         <div className="mt-3">
           <span
             className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-black tracking-wider uppercase ${label.color}`}

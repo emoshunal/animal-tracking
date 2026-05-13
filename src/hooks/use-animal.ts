@@ -1,6 +1,5 @@
-
 import { useEffect, useState } from "react"
-import { supabase } from "@/utils/supabase" 
+import { supabase } from "@/utils/supabase"
 
 export interface Owner {
   id: string
@@ -15,18 +14,18 @@ export interface Owner {
 
 export interface Animal {
   id: string
-  owner_id: string | null 
+  owner_id: string | null
   name: string
   breed: string | null
   species: string | null
   gender: string | null
-  birthDate: string | null 
+  birthDate: string | null
   qr_code_id: string
   qrStatus: string
   photo_url: string | null
   remarks: string | null
   is_vaccinated: boolean
-  status: "Safe" | "Lost" | "Found" | string 
+  status: "Safe" | "Lost" | "Found" | string
   created_at: string
 
   owners?: Owner
@@ -36,7 +35,11 @@ export function useAnimals(
   page = 1,
   pageSize = 10,
   refreshTrigger: number,
-  ownerId: string | null = null
+  ownerId: string | null = null,
+  sortConfig: { column: string; ascending: boolean } = {
+    column: "created_at",
+    ascending: false,
+  }
 ) {
   const [data, setData] = useState<Animal[]>([])
   const [count, setCount] = useState(0)
@@ -47,15 +50,12 @@ export function useAnimals(
     async function fetchAnimals() {
       setLoading(true)
 
-      // Calculate range for Supabase
       const from = (page - 1) * pageSize
       const to = from + pageSize - 1
 
       let query = supabase
         .from("animals")
         .select("*, owners(*)", { count: "exact" })
-        .order("created_at", { ascending: false })
-        .range(from, to)
 
       if (searchTerm) {
         query = query.ilike("name", `%${searchTerm}%`)
@@ -64,6 +64,12 @@ export function useAnimals(
       if (ownerId) {
         query = query.eq("owner_id", ownerId)
       }
+
+      query = query.order(sortConfig.column, {
+        ascending: sortConfig.ascending,
+      })
+
+      query = query.range(from, to)
 
       const { data: animals, count: totalCount, error } = await query
 
@@ -78,7 +84,13 @@ export function useAnimals(
     }
 
     fetchAnimals()
-  }, [searchTerm, page, pageSize, refreshTrigger, ownerId])
+  }, [searchTerm, page, pageSize, refreshTrigger, ownerId, sortConfig])
 
-  return { data, count, loading, ownerName, totalPages: Math.ceil(count / pageSize) }
+  return {
+    data,
+    count,
+    loading,
+    ownerName,
+    totalPages: Math.ceil(count / pageSize),
+  }
 }

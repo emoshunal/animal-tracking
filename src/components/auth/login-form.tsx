@@ -11,23 +11,22 @@ import {
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { toast } from "sonner"
-import { PawPrint, ShieldCheck } from "lucide-react"
+import { Eye, EyeOff, PawPrint, ShieldCheck } from "lucide-react"
 import loginImg from "@/assets/login.jpg"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { supabase } from "@/utils/supabase"
+import { useState } from "react"
 
 const loginSchema = z.object({
-  email: z.string().email("Please use a valid institutional email."),
-  password: z.string().min(8, "Password must be at least 8 characters."),
+  email: z.string().email("Please use a valid email address."),
+  password: z.string().min(1, "Password is required!."),
 })
 
 type LoginFormValues = z.infer<typeof loginSchema>
 
-const STATIC_USER = {
-  email: "admin@sec.gov",
-  password: "secretary",
-}
 export function LoginForm() {
   const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false)
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -35,27 +34,29 @@ export function LoginForm() {
 
   async function onSubmit(data: LoginFormValues) {
     toast.promise(
-      new Promise(async (resolve, reject) => {
-        // Simulate network delay
-        await new Promise((res) => setTimeout(res, 1500))
+      (async () => {
+        // 2. Query the users table
+        const { data: user, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", data.email)
+          .eq("password", data.password) // Plain text comparison as requested
+          .single()
 
-        if (
-          data.email === STATIC_USER.email &&
-          data.password === STATIC_USER.password
-        ) {
-          // Store a dummy token or user info if needed
-          localStorage.setItem("isAuthenticated", "true")
-          resolve(data)
-
-          // Redirect to dashboard/home after a short delay
-          setTimeout(() => navigate("/dashboard"), 1000)
-        } else {
-          reject(new Error("Invalid credentials"))
+        if (error || !user) {
+          console.error("Error logging in:", error)
+          throw new Error("Invalid email or password.")
         }
-      }),
+
+        localStorage.setItem("isAuthenticated", "true")
+        localStorage.setItem("userRole", user.role)
+        localStorage.setItem("userName", user.email)
+        navigate("/dashboard")
+        return user
+      })(),
       {
-        loading: "Authenticating session...",
-        success: "Identity verified. Redirecting...",
+        loading: "Verifying credentials...",
+        success: (user: any) => `Welcome back, ${user.role}!`,
         error: (err) => err.message,
       }
     )
@@ -130,19 +131,32 @@ export function LoginForm() {
                       <FieldLabel className="text-xs font-bold tracking-wider text-slate-500 uppercase">
                         Password
                       </FieldLabel>
-                      <a
-                        href="#"
+                      <Link
+                        to="/forgot-password"
                         className="text-xs font-medium text-emerald-600 hover:underline"
                       >
                         Forgot?
-                      </a>
+                      </Link>
                     </div>
-                    <Input
-                      type="password"
-                      placeholder="••••••••"
-                      className="h-12 border-slate-200 bg-slate-50/50 transition-all focus:bg-white"
-                      {...form.register("password")}
-                    />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        className="h-12 border-slate-200 bg-slate-50/50 pr-10 transition-all focus:bg-white"
+                        {...form.register("password")}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                      >
+                        {showPassword ? (
+                          <EyeOff size={18} />
+                        ) : (
+                          <Eye size={18} />
+                        )}
+                      </button>
+                    </div>
                     {form.formState.errors.password && (
                       <FieldError>
                         {form.formState.errors.password.message}

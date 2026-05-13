@@ -10,12 +10,15 @@ import Layout from "./components/layout"
 import ScanReportsPage from "./pages/admin/reports"
 import LandingPage from "./pages/landing"
 import AnimalOwnersPage from "./pages/admin/owner/animal-owner"
+import UserManagement from "./pages/admin/user"
+import { ForgotPassword } from "./components/auth/forgot-password"
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/:qrId" element={<LandingPage />} />
         <Route path="/" element={<LoginForm />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
@@ -25,6 +28,7 @@ export function App() {
             <Route path="/lost-and-found" element={<LostAndFoundPage />} />
             <Route path="/reports" element={<ScanReportsPage />} />
             <Route path="/animal" element={<AnimalOwnersPage />} />
+            <Route path="/users" element={<UserManagement />} />
           </Route>
         </Route>
       </Routes>

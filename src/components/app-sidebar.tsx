@@ -9,6 +9,7 @@ import {
   LogOut,
   ChevronUp,
   UserCircle,
+  KeyRound,
 } from "lucide-react"
 
 import {
@@ -31,6 +32,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
+import { useEffect, useState } from "react"
+import { ChangePasswordModal } from "./auth/change-password"
 
 const mainNav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -44,13 +47,28 @@ const mainNav = [
     icon: ClipboardList,
     badge: "3",
   },
+  { title: "User Management", url: "/users", icon: UserCircle },
 ]
 
 export function AppSidebar() {
   const location = useLocation()
+  const [userName, setUserName] = useState<string>("Guest")
+
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
+  const userEmail = localStorage.getItem("userName") || ""
+
+  useEffect(() => {
+    // Retrieve the name saved during login
+    const savedName = localStorage.getItem("userName")
+    if (savedName) {
+      setUserName(savedName)
+    }
+  }, [])
   const handleLogout = () => {
     console.log("test")
     localStorage.removeItem("isAuthenticated")
+    localStorage.removeItem("userName")
+    localStorage.removeItem("userRole")
 
     window.location.href = "/"
   }
@@ -144,7 +162,7 @@ export function AppSidebar() {
                     </div>
                     <div className="flex flex-col items-start overflow-hidden text-sm group-data-[collapsible=icon]:hidden">
                       <span className="w-28 truncate text-left font-semibold text-foreground">
-                        Secretary
+                        {userName}
                       </span>
                       <span className="w-28 truncate text-left text-[11px] text-muted-foreground">
                         Barangay Anonas
@@ -157,23 +175,28 @@ export function AppSidebar() {
               <DropdownMenuContent
                 side="right"
                 align="end"
-                className="mb-2 ml-2 w-56"
+                className="mb-2 ml-2 w-56 border-none p-1 shadow-xl"
               >
-                {/* <DropdownMenuItem className="cursor-pointer gap-2 py-2">
-                  <UserCircle className="size-4" /> Profile Details
+                <DropdownMenuItem
+                  onClick={() => setIsPasswordModalOpen(true)} // Open modal here
+                  className="cursor-pointer gap-3 px-4 py-3 font-semibold text-slate-600 transition-colors focus:bg-emerald-50 focus:text-emerald-700"
+                >
+                  <KeyRound className="size-4" /> Change Password
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer gap-2 py-2">
-                  <Bell className="size-4" /> Notifications
-                </DropdownMenuItem>
-                <SidebarSeparator /> */}
+
                 <DropdownMenuItem
                   onClick={handleLogout}
-                  className="cursor-pointer gap-2 bg-white py-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
+                  className="cursor-pointer gap-3 px-4 py-3 font-semibold text-destructive transition-colors focus:bg-destructive/10 focus:text-destructive"
                 >
                   <LogOut className="size-4" /> Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <ChangePasswordModal
+              isOpen={isPasswordModalOpen}
+              onClose={() => setIsPasswordModalOpen(false)}
+              userEmail={userEmail}
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
