@@ -45,7 +45,6 @@ const mainNav = [
     title: "Scan Reports",
     url: "/reports",
     icon: ClipboardList,
-    badge: "3",
   },
   { title: "User Management", url: "/users", icon: UserCircle },
 ]
@@ -115,11 +114,11 @@ export function AppSidebar() {
                     <Link to={item.url}>
                       <item.icon className="size-[18px]" />
                       <span>{item.title}</span>
-                      {item.badge && (
+                      {/* {item.badge && (
                         <Badge className="ml-auto h-5 border-none bg-emerald-100 px-1.5 text-emerald-700 group-data-[collapsible=icon]:hidden hover:bg-emerald-100">
                           {item.badge}
                         </Badge>
-                      )}
+                      )} */}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

@@ -9,27 +9,49 @@ import {
   Inbox,
   AlertCircle,
   CheckCircle,
+  Trash2,
+  X,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+
 import { ReportLostModal } from "@/components/report-lost-animal"
 import { useReportFetch } from "@/hooks/use-report-fetch"
 import { useResolveIncident } from "@/hooks/use-resolve"
 import { useDebounce } from "@/hooks/use-debounce"
 import { formatDistanceToNow } from "date-fns"
+import { supabase } from "@/utils/supabase"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 export default function LostAndFoundPage() {
   const [filter, setFilter] = useState<"ALL" | "LOST" | "FOUND">("ALL")
   const [search, setSearch] = useState("")
   const debouncedSearch = useDebounce(search, 300)
 
+  const [reportToDelete, setReportToDelete] = useState<string | null>(null)
   const { data: reports, loading } = useReportFetch(filter, debouncedSearch)
 
-  const { markAsFound, isResolving } = useResolveIncident()
+  const { markAsFound, isResolving, deleteReport, isDeleting } =
+    useResolveIncident()
 
+  const confirmDelete = async () => {
+    if (reportToDelete) {
+      const success = await deleteReport(reportToDelete)
+      if (success) setReportToDelete(null)
+    }
+  }
   return (
     <div className="min-h-screen flex-1 space-y-6 bg-slate-50/50 p-8 pt-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -44,7 +66,38 @@ export default function LostAndFoundPage() {
         </div>
         <ReportLostModal />
       </div>
-
+      <AlertDialog
+        open={!!reportToDelete}
+        onOpenChange={() => setReportToDelete(null)}
+      >
+        <AlertDialogContent className="rounded-2xl border-none bg-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl font-bold">
+              Remove this report?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-sm font-medium text-slate-500">
+              This action cannot be undone. This will permanently remove the
+              incident report from the community database.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-4">
+            <AlertDialogCancel className="rounded-xl border-slate-200">
+              No, keep it
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="rounded-xl bg-red-600 hover:bg-red-700"
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                "Yes, delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className="flex flex-col items-center gap-4 md:flex-row">
         <div className="relative w-full flex-1 md:max-w-md">
           <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
@@ -134,7 +187,6 @@ export default function LostAndFoundPage() {
                   </div>
                 </div>
 
-                {/* Content Container */}
                 <div className="flex flex-1 flex-col p-6">
                   <div className="mb-4 flex items-start justify-between">
                     <div>
@@ -147,12 +199,23 @@ export default function LostAndFoundPage() {
                         </span>
                       </div>
                     </div>
-                    <Badge
+                    {report.status === "FOUND" && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setReportToDelete(report.id)}
+                        className="size-8 rounded-full text-slate-400 hover:bg-red-50 hover:text-red-500"
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    )}
+
+                    {/* <Badge
                       variant="secondary"
                       className="border-none bg-slate-100 font-mono text-[9px] text-slate-400"
                     >
                       #{report.id.toString().slice(0, 5)}
-                    </Badge>
+                    </Badge> */}
                   </div>
 
                   <div className="mb-6 space-y-3">

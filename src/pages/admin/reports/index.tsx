@@ -8,6 +8,7 @@ import {
   Bell,
   UserCheck,
   Loader2,
+  Trash2,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -20,11 +21,24 @@ import { formatDistanceToNow } from "date-fns"
 import { supabase } from "@/utils/supabase"
 import { toast } from "sonner"
 import emailjs from "@emailjs/browser"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 export default function SightingReportsPage() {
   const { sightings, loading, refetch } = useSightingFetch()
   const [selectedReport, setSelectedReport] = useState<any>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+
+  const [reportToDelete, setReportToDelete] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const filteredSightings = sightings.filter((report: any) => {
     const searchTerm = searchQuery.toLowerCase()
@@ -122,6 +136,33 @@ export default function SightingReportsPage() {
     }
   }
 
+  const handleDeleteReport = async () => {
+    if (!reportToDelete) return
+    setIsDeleting(true)
+    try {
+      const { error } = await supabase
+        .from("sighting_reports")
+        .delete()
+        .eq("id", reportToDelete)
+
+      if (error) throw error
+
+      toast.success("Sighting report deleted permanently")
+
+      // If we deleted the report currently being viewed, clear the selection
+      if (selectedReport?.id === reportToDelete) {
+        setSelectedReport(null)
+      }
+
+      setReportToDelete(null)
+      refetch()
+    } catch (err) {
+      toast.error("Failed to delete report")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   if (loading)
     return (
       <div className="flex h-screen items-center justify-center">
@@ -147,7 +188,34 @@ export default function SightingReportsPage() {
           </Badge>
         </div>
       </div>
-
+      <AlertDialog
+        open={!!reportToDelete}
+        onOpenChange={() => setReportToDelete(null)}
+      >
+        <AlertDialogContent className="rounded-2xl border-none bg-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl font-bold">
+              Delete this report?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-sm font-medium">
+              This will permanently remove this sighting record. This action
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-4">
+            <AlertDialogCancel className="rounded-xl border-slate-200">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteReport}
+              className="rounded-xl bg-red-600 hover:bg-red-700"
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Deleting..." : "Delete Permanently"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className="flex flex-1 overflow-hidden">
         <div className="flex w-full flex-col border-r border-slate-200 bg-white md:w-1/3">
           <div className="border-b border-slate-50 p-4">
@@ -173,9 +241,26 @@ export default function SightingReportsPage() {
                   <h3 className="font-bold text-slate-900">
                     {report.animals?.name || "Unknown Animal"}
                   </h3>
-                  <span className="font-mono text-[10px] text-slate-400">
+                  {/* <span className="font-mono text-[10px] text-slate-400">
                     {formatDistanceToNow(new Date(report.created_at))} ago
-                  </span>
+                  </span> */}
+                  <div className="flex flex-col items-end gap-2">
+                    <span className="font-mono text-[10px] text-slate-400">
+                      {formatDistanceToNow(new Date(report.created_at))} ago
+                    </span>
+                    {/* Delete icon visible on hover in the sidebar */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-6 text-red-200 hover:bg-red-50 hover:text-red-600"
+                      onClick={(e) => {
+                        e.stopPropagation() // Don't select the report when clicking delete
+                        setReportToDelete(report.id)
+                      }}
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  </div>
                 </div>
                 <p className="mb-2 flex items-center gap-1 text-xs text-slate-500">
                   <MapPin className="size-3" /> {report.location_name}

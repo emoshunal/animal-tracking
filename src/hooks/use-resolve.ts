@@ -5,12 +5,12 @@ import { toast } from "sonner"
 
 export function useResolveIncident() {
   const [isResolving, setIsResolving] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
   const triggerRefresh = useIncidentStore((state) => state.triggerRefresh)
 
   const markAsFound = async (reportId: string, animalId: string) => {
     setIsResolving(reportId)
     try {
-      // 1. Update the Lost Report status
       const { error: reportError } = await supabase
         .from("lost_reports")
         .update({ status: "FOUND" })
@@ -18,7 +18,6 @@ export function useResolveIncident() {
 
       if (reportError) throw reportError
 
-      // 2. Update the Animal status to Safe
       const { error: animalError } = await supabase
         .from("animals")
         .update({ status: "Safe" })
@@ -35,5 +34,24 @@ export function useResolveIncident() {
     }
   }
 
-  return { markAsFound, isResolving }
+  const deleteReport = async (reportId: string) => {
+    setIsDeleting(true)
+    try {
+      const { error } = await supabase
+        .from("lost_reports")
+        .delete()
+        .eq("id", reportId)
+
+      if (error) throw error
+
+      toast.success("Report deleted successfully")
+      triggerRefresh()
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete report")
+      return false
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+  return { markAsFound, isResolving, deleteReport, isDeleting }
 }

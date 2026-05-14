@@ -104,13 +104,6 @@ const Dashboard = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {/* <Button
-            variant="outline"
-            size="sm"
-            className="border-slate-200 bg-white shadow-sm"
-          >
-            <Download className="mr-2 size-4" /> Export Data
-          </Button> */}
           <RegisterAnimalModal />
         </div>
       </div>
@@ -134,21 +127,19 @@ const Dashboard = () => {
           color="text-red-600"
           urgent={stats.totalStray > 0}
         />
-        <StatsCard
-          title="Vaccinated"
-          value={stats.vaccinated}
-          trend="vac"
-          up={true}
-          icon={Syringe}
-          color="text-indigo-600"
+        <VaccinationStatsCard
+          vaccinated={stats.vaccinated}
+          unvaccinated={stats.unvaccinated}
+          rate={stats.vaccinationRate}
         />
         <StatsCard
-          title="Not Vaccinated"
-          value={stats.unvaccinated}
+          title="Missing Animals"
+          value={stats.activeLost.toString().padStart(2, "0")}
           trend="lost"
-          up={true}
+          up={false}
           icon={Megaphone}
-          color="text-indigo-600"
+          color="text-red-600"
+          urgent={stats.activeLost > 0}
         />
       </div>
 
@@ -314,4 +305,53 @@ function ActivityItem({
   )
 }
 
+function VaccinationStatsCard({
+  vaccinated,
+  unvaccinated,
+  rate,
+}: {
+  vaccinated: number
+  unvaccinated: number
+  rate: number
+}) {
+  return (
+    <Card className="border-none bg-white shadow-md shadow-slate-200/50">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-[10px] font-black tracking-widest text-slate-500 uppercase">
+          Vaccination Status
+        </CardTitle>
+        <div className="rounded-xl bg-indigo-50 p-2.5 text-indigo-600">
+          <Syringe className="size-4" />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-baseline gap-2">
+          <span className="text-3xl font-black text-slate-900">
+            {vaccinated}
+          </span>
+          <span className="text-xs font-bold text-slate-400">
+            / {vaccinated + unvaccinated} Total
+          </span>
+        </div>
+
+        {/* Progress Bar Visual */}
+        <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+          <div
+            className="h-full bg-indigo-500 transition-all"
+            style={{ width: `${rate}%` }}
+          />
+        </div>
+
+        <div className="mt-3 flex items-center justify-between">
+          <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[9px] font-black tracking-wider text-blue-600 uppercase">
+            {rate}% Protected
+          </span>
+          <span className="text-[9px] font-bold text-slate-400 uppercase">
+            {unvaccinated} Unvaccinated
+          </span>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
 export default Dashboard
