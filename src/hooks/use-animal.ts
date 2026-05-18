@@ -113,7 +113,6 @@ export function useAnimals(
     sortConfig.column,
     sortConfig.ascending,
   ])
-  // }, [searchTerm, page, pageSize, refreshTrigger, ownerId, sortConfig])
 
   return {
     data,
