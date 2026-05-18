@@ -30,16 +30,18 @@ export interface Animal {
 
   owners?: Owner
 }
+
+const DEFAULT_SORT = {
+  column: "created_at",
+  ascending: false,
+}
 export function useAnimals(
   searchTerm = "",
   page = 1,
   pageSize = 10,
   refreshTrigger: number,
   ownerId: string | null = null,
-  sortConfig: { column: string; ascending: boolean } = {
-    column: "created_at",
-    ascending: false,
-  }
+  sortConfig = DEFAULT_SORT
 ) {
   const [data, setData] = useState<Animal[]>([])
   const [count, setCount] = useState(0)
@@ -47,6 +49,7 @@ export function useAnimals(
   const [ownerName, setOwnerName] = useState<string | null>(null)
 
   useEffect(() => {
+    let isMounted = true
     async function fetchAnimals() {
       setLoading(true)
 
@@ -73,18 +76,44 @@ export function useAnimals(
 
       const { data: animals, count: totalCount, error } = await query
 
-      if (!error && animals) {
-        setData(animals as unknown as Animal[])
-        setCount(totalCount || 0)
-        if (ownerId && animals.length > 0 && animals[0].owners) {
-          setOwnerName(animals[0].owners.full_name)
+      if (isMounted) {
+        if (!error && animals) {
+          setData(animals as unknown as Animal[])
+          setCount(totalCount || 0)
+
+          if (ownerId && animals.length > 0 && animals[0].owners) {
+            setOwnerName((animals[0].owners as unknown as Owner).full_name)
+          }
         }
+        setLoading(false)
       }
-      setLoading(false)
     }
 
+    //   if (!error && animals) {
+    //     setData(animals as unknown as Animal[])
+    //     setCount(totalCount || 0)
+    //     if (ownerId && animals.length > 0 && animals[0].owners) {
+    //       setOwnerName(animals[0].owners.full_name)
+    //     }
+    //   }
+    //   setLoading(false)
+    // }
+
     fetchAnimals()
-  }, [searchTerm, page, pageSize, refreshTrigger, ownerId, sortConfig])
+    return () => {
+      isMounted = false // Clean up execution when hook parameters change quickly
+    }
+    // We break down the object fields here so React only tracks the primitive strings/booleans, not the object reference
+  }, [
+    searchTerm,
+    page,
+    pageSize,
+    refreshTrigger,
+    ownerId,
+    sortConfig.column,
+    sortConfig.ascending,
+  ])
+  // }, [searchTerm, page, pageSize, refreshTrigger, ownerId, sortConfig])
 
   return {
     data,

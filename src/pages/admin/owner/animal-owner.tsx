@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom"
 import { useAnimals } from "@/hooks/use-animal" // You'll create this hook
-import { PawPrint, FilterX, Dog, Cat } from "lucide-react"
+import { PawPrint, FilterX, Dog, Cat, CircleAlert } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -48,12 +48,12 @@ export default function AnimalRegistryPage() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-            Animal Registry
+            Animal List
           </h1>
           <p className="font-medium text-slate-500">
             {ownerId
               ? `Showing animals registered to this owner.`
-              : `Manage and track registered community animals.`}
+              : `Showing all registered community animals.`}
           </p>
         </div>
         {/* <Button
@@ -118,10 +118,22 @@ export default function AnimalRegistryPage() {
                     <p className="text-[10px] font-bold text-slate-400 uppercase">
                       Status
                     </p>
-                    <p className="flex items-center gap-1 text-sm font-medium text-emerald-600">
-                      <div className="size-1.5 rounded-full bg-emerald-500" />{" "}
-                      Vaccinated
-                    </p>
+                    <div
+                      className={`flex items-center gap-1 text-sm font-medium ${
+                        animal.is_vaccinated
+                          ? "text-emerald-600"
+                          : "text-rose-600"
+                      }`}
+                    >
+                      <span
+                        className={`size-1.5 rounded-full ${
+                          animal.is_vaccinated
+                            ? "bg-emerald-500"
+                            : "bg-rose-500"
+                        }`}
+                      />{" "}
+                      {animal.is_vaccinated ? "Vaccinated" : "Unvaccinated"}
+                    </div>
                   </div>
                   <div>
                     <p className="text-[10px] font-bold text-slate-400 uppercase">
@@ -137,7 +149,9 @@ export default function AnimalRegistryPage() {
           ))
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-100 bg-white py-20">
-            <div className="mb-4 text-4xl">📭</div>
+            <div className="mb-4 text-4xl">
+              <CircleAlert className="size-24 text-red-400" />
+            </div>
             <h3 className="text-lg font-bold text-slate-900">
               No animals found
             </h3>
