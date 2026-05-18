@@ -12,6 +12,7 @@ import LandingPage from "./pages/landing"
 import AnimalOwnersPage from "./pages/admin/owner/animal-owner"
 import UserManagement from "./pages/admin/user"
 import { ForgotPassword } from "./components/auth/forgot-password"
+import AdoptionComingSoon from "./pages/adoption"
 export function App() {
   return (
     <BrowserRouter>
@@ -28,6 +29,7 @@ export function App() {
             <Route path="/lost-and-found" element={<LostAndFoundPage />} />
             <Route path="/reports" element={<ScanReportsPage />} />
             <Route path="/animal" element={<AnimalOwnersPage />} />
+            <Route path="/adoption" element={<AdoptionComingSoon />} />
             <Route path="/users" element={<UserManagement />} />
           </Route>
         </Route>

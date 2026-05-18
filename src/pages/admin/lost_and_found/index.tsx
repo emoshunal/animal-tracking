@@ -10,7 +10,6 @@ import {
   AlertCircle,
   CheckCircle,
   Trash2,
-  X,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -23,7 +22,7 @@ import { useReportFetch } from "@/hooks/use-report-fetch"
 import { useResolveIncident } from "@/hooks/use-resolve"
 import { useDebounce } from "@/hooks/use-debounce"
 import { formatDistanceToNow } from "date-fns"
-import { supabase } from "@/utils/supabase"
+
 import {
   AlertDialog,
   AlertDialogAction,

@@ -9,6 +9,7 @@ import {
   History,
   ExternalLink,
   Printer,
+  Heart,
 } from "lucide-react"
 import { Button } from "./ui/button"
 import { printQRCode } from "@/utils/qrcode"
@@ -68,15 +69,30 @@ export function AnimalProfileModal({
                 {animal.breed || animal.species}
               </p>
             </div>
-            <Badge
-              className={
-                animal.status === "Safe"
-                  ? "bg-emerald-100 text-emerald-700"
-                  : "bg-red-100 text-red-700"
-              }
-            >
-              {animal.status}
-            </Badge>
+            <div className="flex flex-col items-center gap-2">
+              <Badge
+                className={
+                  animal.status === "Safe"
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-red-100 text-red-700"
+                }
+              >
+                {animal.status}
+              </Badge>
+              {!animal.owner_id && (
+                <div className="sticky bottom-0 border-t border-slate-100 bg-white/90 p-4 backdrop-blur-sm">
+                  <Button
+                    className="w-full bg-emerald-600 text-xs font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 active:scale-[0.98]"
+                    onClick={() => {
+                      /* Handle your adoption flow / modal / form open here */
+                    }}
+                  >
+                    <Heart className="mr-2 size-4 fill-white" />
+                    Adopt {animal.name}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* --- QUICK STATS GRID --- */}

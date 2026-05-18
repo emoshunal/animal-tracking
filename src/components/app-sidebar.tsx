@@ -7,7 +7,7 @@ import {
   Map,
   ShieldCheck,
   LogOut,
-  ChevronUp,
+  Dog,
   UserCircle,
   KeyRound,
 } from "lucide-react"
@@ -31,7 +31,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
+
 import { useEffect, useState } from "react"
 import { ChangePasswordModal } from "./auth/change-password"
 
@@ -45,6 +45,11 @@ const mainNav = [
     title: "Scan Reports",
     url: "/reports",
     icon: ClipboardList,
+  },
+  {
+    title: "Adoption",
+    url: "/adoption",
+    icon: Dog,
   },
   { title: "User Management", url: "/users", icon: UserCircle },
 ]
@@ -168,7 +173,7 @@ export function AppSidebar() {
                       </span>
                     </div>
                   </div>
-                  <ChevronUp className="ml-auto size-4 text-muted-foreground group-data-[collapsible=icon]:hidden" />
+                  <Dog className="ml-auto size-4 text-muted-foreground group-data-[collapsible=icon]:hidden" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
